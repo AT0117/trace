@@ -75,4 +75,124 @@ class ApiService {
       };
     }
   }
+
+  static Future<Map<String, dynamic>> fetchPulse() async {
+    final url = '$backendBaseUrl/api/pulse';
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(url),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'org_id': orgId}),
+          )
+          .timeout(const Duration(seconds: 15));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Server Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("Pulse API Error: $e");
+      return {
+        "total_memories": 0,
+        "contributors": [],
+        "platforms": [],
+        "platform_distribution": {},
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> fetchTimeline() async {
+    final url = '$backendBaseUrl/api/timeline';
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(url),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'org_id': orgId}),
+          )
+          .timeout(const Duration(seconds: 20));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Server Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("Timeline API Error: $e");
+      return {"timeline": []};
+    }
+  }
+
+  static Future<Map<String, dynamic>> fetchConflicts() async {
+    final url = '$backendBaseUrl/api/conflicts';
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(url),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'org_id': orgId}),
+          )
+          .timeout(const Duration(seconds: 25));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Server Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("Conflicts API Error: $e");
+      return {"conflicts": []};
+    }
+  }
+
+  static Future<Map<String, dynamic>> fetchDecisionDrift(String topic) async {
+    final url = '$backendBaseUrl/api/drift';
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(url),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'org_id': orgId, 'topic': topic}),
+          )
+          .timeout(const Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Server Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("Drift API Error: $e");
+      return {"nodes": [], "edges": []};
+    }
+  }
+
+  static Future<Map<String, dynamic>> fetchCatchUp(int days) async {
+    final url = '$backendBaseUrl/api/catchup';
+
+    try {
+      final response = await http
+          .post(
+            Uri.parse(url),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({'org_id': orgId, 'days': days}),
+          )
+          .timeout(const Duration(seconds: 30));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Server Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print("CatchUp API Error: $e");
+      return {"cards": []};
+    }
+  }
 }

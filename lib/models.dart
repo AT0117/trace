@@ -10,4 +10,20 @@ class ChatMessage {
     this.timelineEvents,
     this.citations,
   });
+
+  Map<String, dynamic> toJson() => {
+    'text': text,
+    'isUser': isUser,
+    'timelineEvents': timelineEvents,
+    'citations': citations,
+  };
+
+  factory ChatMessage.fromJson(Map<String, dynamic> json) {
+    return ChatMessage(
+      text: json['text'] as String? ?? '',
+      isUser: json['isUser'] as bool? ?? false,
+      timelineEvents: json['timelineEvents'] as List<dynamic>?,
+      citations: json['citations'] as List<dynamic>?,
+    );
+  }
 }
