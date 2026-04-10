@@ -1,38 +1,56 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
 
 class ApiService {
-  static const String backendUrl = 'http://127.0.0.1:8000/api/investigate';
-  static const String orgId = 'hackathon_team_1'; // Matches the Discord bot!
+  static const String orgId = 'hackathon_team_1';
 
-  static Future<Map<String, dynamic>> fetchAIResponse(String question) async {
+  static String get backendBaseUrl {
+    if (kIsWeb) {
+      // Chrome strictly prefers localhost over 127.0.0.1
+      return 'http://localhost:8000';
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      return 'http://10.0.2.2:8000';
+    } else {
+      return 'http://127.0.0.1:8000';
+    }
+  }
+
+  static Future<Map<String, dynamic>> fetchAIResponse(String question, String role) async {
+    final url = '$backendBaseUrl/api/investigate';
+
     try {
       final response = await http
           .post(
-            Uri.parse(backendUrl),
+            Uri.parse(url),
             headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({'org_id': orgId, 'question': question}),
+            body: jsonEncode({'org_id': orgId, 'question': question, 'role': role}),
           )
-          .timeout(const Duration(seconds: 20));
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       } else {
-        throw Exception('Server Error: ${response.statusCode}');
+        final errorBody = jsonDecode(response.body);
+        final detail = errorBody['detail'] ?? 'Unknown error';
+        return {
+          "answer_text": "Server Error (${response.statusCode}): $detail",
+          "citations": [],
+        };
       }
     } catch (e) {
       print("API Error: $e");
       return {
         "answer_text":
-            "Connection failed. Please ensure the backend is running at $backendUrl.",
-        "timeline_events": [],
+            "Connection failed. Please ensure the backend is running at $url.",
         "citations": [],
       };
     }
   }
 
+  // Restored the missing method!
   static Future<Map<String, dynamic>> fetchAnalytics() async {
-    final url = backendUrl.replaceAll('/investigate', '/analytics');
+    final url = '$backendBaseUrl/api/analytics';
 
     try {
       final response = await http
@@ -41,7 +59,7 @@ class ApiService {
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({'org_id': orgId}),
           )
-          .timeout(const Duration(seconds: 20));
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body);

@@ -294,6 +294,16 @@ class _InvestigationDashboardState extends State<InvestigationDashboard> {
   final List<ChatMessage> _messages = [];
   bool _isTyping = false;
 
+  static const List<String> _roles = [
+    'CEO / Founder',
+    'Engineering Lead',
+    'Product Manager',
+    'Designer',
+    'Intern / New Joiner',
+    'External Stakeholder',
+  ];
+  String _selectedRole = 'CEO / Founder';
+
   void _sendMessage() async {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
@@ -305,7 +315,7 @@ class _InvestigationDashboardState extends State<InvestigationDashboard> {
     });
     _scrollToBottom();
 
-    final response = await ApiService.fetchAIResponse(text);
+    final response = await ApiService.fetchAIResponse(text, _selectedRole);
 
     setState(() {
       _isTyping = false;
@@ -343,6 +353,37 @@ class _InvestigationDashboardState extends State<InvestigationDashboard> {
         ),
         backgroundColor: const Color(0xFF1D2236),
         elevation: 0,
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: const Color(0xFF00E5FF).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.3)),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _selectedRole,
+                icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF00E5FF), size: 20),
+                dropdownColor: const Color(0xFF1D2236),
+                style: const TextStyle(color: Color(0xFF00E5FF), fontSize: 13, fontWeight: FontWeight.w600),
+                items: _roles.map((role) => DropdownMenuItem(
+                  value: role,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(_getRoleIcon(role), size: 16, color: const Color(0xFF00E5FF)),
+                      const SizedBox(width: 8),
+                      Text(role),
+                    ],
+                  ),
+                )).toList(),
+                onChanged: (val) => setState(() => _selectedRole = val!),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -452,6 +493,25 @@ class _InvestigationDashboardState extends State<InvestigationDashboard> {
         ),
       ),
     );
+  }
+
+  IconData _getRoleIcon(String role) {
+    switch (role) {
+      case 'CEO / Founder':
+        return Icons.business;
+      case 'Engineering Lead':
+        return Icons.code;
+      case 'Product Manager':
+        return Icons.dashboard;
+      case 'Designer':
+        return Icons.palette;
+      case 'Intern / New Joiner':
+        return Icons.school;
+      case 'External Stakeholder':
+        return Icons.handshake;
+      default:
+        return Icons.person;
+    }
   }
 
   IconData _getPlatformIcon(String? platform) {
