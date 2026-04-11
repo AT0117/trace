@@ -1,6 +1,6 @@
 # Trace
 
-Trace is an AI-powered Organizational Memory Engine built natively in Flutter. The platform sits across disparate communication channels (Slack, Email, Meetings, GitHub) and reconstructs institutional knowledge into a unified, queryable vector space. 
+Trace is an AI-powered Organizational Memory Engine built natively in Flutter. The platform sits across disparate communication channels (Slack, Email, Meetings) and reconstructs institutional knowledge into a unified, queryable vector space. 
 
 Instead of searching keywords natively on a platform, Trace uses a vector database (`ChromaDB`) chained with Llama-3 to actively synthesize, trace, and cite executive decisions as they travel through your organization. 
 
