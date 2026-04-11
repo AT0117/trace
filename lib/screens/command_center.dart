@@ -58,12 +58,7 @@ class _CommandCenterState extends State<CommandCenter>
 
     return Scaffold(
       
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _showCatchUpSheet,
-        backgroundColor: const Color(0xFFE91E63),
-        icon: Icon(Icons.auto_awesome, color: Theme.of(context).colorScheme.onSurface),
-        label: Text('Catch Up', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold)),
-      ),
+
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(color: Color(0xFF00E5FF)))
@@ -135,6 +130,12 @@ class _CommandCenterState extends State<CommandCenter>
       ),
       actions: [
         IconButton(
+          tooltip: 'Catch Up',
+          icon: const Icon(Icons.auto_awesome, color: Color(0xFFE91E63)),
+          onPressed: _showCatchUpSheet,
+        ),
+        IconButton(
+          tooltip: 'Refresh',
           icon: const Icon(Icons.refresh_rounded, color: Color(0xFF00E5FF)),
           onPressed: _loadData,
         ),

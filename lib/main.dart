@@ -67,14 +67,16 @@ class _MainNavigationState extends State<MainNavigation> {
               width: 1,
               color: Colors.white10,
             ),
-            Expanded(child: _screens[_currentIndex]),
+            Expanded(
+              child: IndexedStack(index: _currentIndex, children: _screens),
+            ),
           ],
         ),
       );
     }
 
     return Scaffold(
-      body: _screens[_currentIndex],
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: const Border(
@@ -154,7 +156,9 @@ class _MainNavigationState extends State<MainNavigation> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(colors: [AppTheme.primaryBlue, AppTheme.successGreen]),
+                    gradient: const LinearGradient(
+                      colors: [AppTheme.primaryBlue, AppTheme.successGreen],
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(Icons.blur_on, color: Colors.white),
@@ -162,15 +166,24 @@ class _MainNavigationState extends State<MainNavigation> {
                 const SizedBox(width: 12),
                 const Text(
                   'TRACE',
-                  style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
                 ),
               ],
             ),
             actions: [
               IconButton(
-                icon: Icon(themeNotifier.value == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
+                icon: Icon(
+                  themeNotifier.value == ThemeMode.dark
+                      ? Icons.light_mode
+                      : Icons.dark_mode,
+                ),
                 onPressed: () {
-                  themeNotifier.value = themeNotifier.value == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+                  themeNotifier.value = themeNotifier.value == ThemeMode.dark
+                      ? ThemeMode.light
+                      : ThemeMode.dark;
                 },
               ),
               const SizedBox(width: 8),
